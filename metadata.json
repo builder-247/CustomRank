@@ -1,0 +1,6 @@
+{
+  "name":"&6CustomRank",
+  "description":"Make your own custom rank on hypixel",
+  "version":"11",
+  "requires":["SettingsManager"]
+}
