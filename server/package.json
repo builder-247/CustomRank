@@ -1,0 +1,19 @@
+{
+  "name": "customrank-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/builder-247/CustomRank/server"
+  },
+  "author": "builder_247",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "morgan": "^1.9.0"
+  }
+}
