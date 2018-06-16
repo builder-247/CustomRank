@@ -1,4 +1,8 @@
 const utils = require("./utils");
+let admins;
+utils.readFile("./store/admins.json", (obj) => {
+    admins = obj;
+});
 
 module.exports = function (username, token, ip, cb) {
     utils.getData({
@@ -7,7 +11,10 @@ module.exports = function (username, token, ip, cb) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: [username]
+        json: true,
+        body: [
+            username
+        ]
 
     }, (err, body) => {
         if (err) {
@@ -27,6 +34,7 @@ module.exports = function (username, token, ip, cb) {
             if (body.id === uuid) {
                 cb(null, {
                     valid: true,
+                    admin: (admins.indexOf(uuid) !== -1),
                     uuid: uuid
                 })
             } else {

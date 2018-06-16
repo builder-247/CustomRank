@@ -13,7 +13,9 @@ Requests can be sent every 30 seconds.
 |200| OK | Received on succesful exchange
 |400| Bad Request | The request doesn't have all required parameters
 |403| Forbidden | Failed to authenticate the player
+|404| Not Found |  User tried to reach non-existing endpoint
 |429| Too Many Requests | User not respecting the 30 second throttle
+|500| Internal Server Error | Something went wrong with the server
 
 ## /ranklist
 

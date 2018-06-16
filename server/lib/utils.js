@@ -1,4 +1,5 @@
 const request = require("request");
+const jsonfile = require("jsonfile");
 
 function stripFormatting(str) {
     return str.replace(/&./g, "")
@@ -27,8 +28,27 @@ function getData(req, cb) {
     })
 }
 
+function readFile(file, cb) {
+    jsonfile.readFile(file, (err, obj) => {
+        if (err) {
+            console.error("[readFile] " + err)
+        }
+        cb(obj)
+    })
+}
+
+function writeFile(file, obj, cb) {
+    jsonfile.writeFile(file, obj, (err) => {
+        if (err) {
+            console.error("[writeFile] " + err)
+        }
+    })
+}
+
 module.exports = {
     stripFormatting,
     isAlphaNumeric,
-    getData
+    getData,
+    readFile,
+    writeFile
 };
