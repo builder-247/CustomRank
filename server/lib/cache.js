@@ -1,29 +1,24 @@
-const utils = require("./utils");
+const utils = require('./utils');
 
-let list = [];
-storeList({username: "test", rank: "[test]"});
-
+const list = [];
 
 function storeList(player) {
-    list.push(player);
-    utils.writeFile("../store/rank_list.json", list)
+  list.push(player);
+  utils.writeFile('../store/rank_list.json', list);
 }
-let cache_meta = {
-    date: Date.now()
+const cacheMeta = {
+  date: Date.now(),
 };
 function getList() {
-    if (Date.now() - cache_meta.date > 30000) {
-        console.log("Got player list from cache");
-        return list;
-    } else {
-        cache_meta.date = Date.now();
-        utils.readFile("../store/rank_list.json", (obj) => {
-            return obj;
-        })
-    }
+  if (Date.now() - cacheMeta.date > 30000) {
+    console.log('Got player list from cache');
+    return list;
+  }
+  cacheMeta.date = Date.now();
+  utils.readFile('../store/rank_list.json', obj => obj);
 }
 
 module.exports = {
-    storeList,
-    getList
+  storeList,
+  getList,
 };
