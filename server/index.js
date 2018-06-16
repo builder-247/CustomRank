@@ -100,6 +100,39 @@ app.post("/ban", function (req, res) {
 
 });
 
-app.listen(port, () => {
-    return console.log("Started server on port " + port);
+// 404 route
+app.use((req, res) =>
+    res.status(404).json({
+        success: false,
+        error: "Not Found",
+    }));
+// 500 route
+app.use((err, req, res, cb) => {
+    return res.status(500).json({
+        success: false,
+        error: "Internal Server Error",
+    });
 });
+
+const server = app.listen(port, () => {
+    console.log("Started server on port " + port);
+});
+/**
+ * Wait for connections to end, then shut down
+ * */
+function gracefulShutdown() {
+    console.log("Received kill signal, shutting down gracefully.");
+    server.close(() => {
+        console.log("Closed out remaining connections.");
+        process.exit();
+    });
+    // if after
+    setTimeout(() => {
+        console.error("Could not close connections in time, forcefully shutting down");
+        process.exit();
+    }, 10 * 1000);
+}
+// listen for TERM signal e.g. kill
+process.once("SIGTERM", gracefulShutdown);
+// listen for INT signal e.g. Ctrl-C
+process.once("SIGINT", gracefulShutdown);
