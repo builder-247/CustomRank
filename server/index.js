@@ -1,5 +1,6 @@
 const express = require("express");
 const logger = require("morgan");
+const config = require("./config");
 const validate = require("./lib/validate");
 const sanitize = require("./lib/sanitize");
 const port = 3000;
@@ -14,12 +15,10 @@ let rate_limits = [];
 app.use((req, res, cb) => {
     let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress || "";
     [ip] = ip.replace(/^.*:/, "").split(",");
-    cb()
-    // Disabled to conduct testing
-    /*
+
     const found = rate_limits.find(el => el.ip === ip);
     if (found !== undefined) {
-        if (Date.now() - found.last_request < 30000) {
+        if (Date.now() - found.last_request < config.API_THROTTLE) {
             console.log(Date.now() - found.last_request);
             res.status(429).json({
                 success: false,
@@ -36,7 +35,6 @@ app.use((req, res, cb) => {
         });
         cb()
     }
-     */
 });
 
 app.get("/ranklist", function (req, res) {
