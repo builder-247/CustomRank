@@ -17,6 +17,25 @@ Requests can be sent every 30 seconds.
 |429| Too Many Requests | User not respecting the 30 second throttle
 |500| Internal Server Error | Something went wrong with the server
 
+## /allowed_ranks
+
+Returns an array of currently allowed custom ranks with formatting.
+
+````HTTP
+GET https://example.url/allowed_ranks
+````
+
+### Response
+
+````php
+{
+    "success": true,         // true or false
+    "ranks": [
+        "&b[COOL]"
+     ]
+}
+````
+
 ## /ranklist
 
 This endpoint is used to retrieve list of custom ranks.

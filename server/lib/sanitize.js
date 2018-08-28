@@ -1,7 +1,7 @@
 const utils = require('./utils');
 const config = require('../config');
 
-const allowedRanks = [];
+const allowedRanks = require('../custom_ranks.json');
 const allowedFormatting = ['&0', '&1', '&2', '&3', '&4', '&5', '&6', '&7', '&8', '&9', '&a', '&b', '&c', '&d', '&e', '&f', '&r'];
 const disallowedRanks = ['[VIP]', '[VIP+]', '[MVP]', '[MVP+]', '[MVP++]', '[YOUTUBER]', '[HELPER]', '[MOD]', '[ADMIN]'];
 

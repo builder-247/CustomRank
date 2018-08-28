@@ -4,6 +4,8 @@ const config = require('./config');
 const validate = require('./lib/validate');
 const sanitize = require('./lib/sanitize');
 
+const allowedRanks = require('./custom_ranks.json');
+
 const port = 3000;
 
 const app = express();
@@ -42,6 +44,13 @@ app.get('/ranklist', (req, res) => {
   res.json({
     success: true,
     list: [],
+  });
+});
+
+app.get('/allowed_ranks', (req, res) => {
+  res.json({
+    success: true,
+    ranks: allowedRanks,
   });
 });
 
@@ -92,10 +101,6 @@ app.post('/setrank', (req, res) => {
       });
     });
   }
-});
-
-app.post('/ban', (req, res) => {
-
 });
 
 // 404 route
