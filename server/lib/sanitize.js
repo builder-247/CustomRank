@@ -7,7 +7,7 @@ const disallowedRanks = ['[VIP]', '[VIP+]', '[MVP]', '[MVP+]', '[MVP++]', '[YOUT
 
 module.exports = function sanitize(rank, cb) {
   const cleanRank = utils.stripFormatting(rank);
-  if (config.ENABLE_CUSTOM_RANKS) {
+  if (config.ENABLE_CUSTOM_RANKS === 'true') {
     if (!utils.isAlphaNumeric(cleanRank)) {
       return cb('Rank must be alphanumeric!', null);
     }
@@ -22,7 +22,7 @@ module.exports = function sanitize(rank, cb) {
     }
     return cb(null, rank);
   }
-  if (allowedRanks.indexOf(cleanRank) !== -1) {
+  if (allowedRanks.indexOf(cleanRank) === -1) {
     return cb('Custom rank not whitelisted!', null);
   }
   return cb(null, rank);
