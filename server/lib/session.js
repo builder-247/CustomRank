@@ -2,6 +2,10 @@ const uuidv4 = require('uuid/v4');
 const utils = require('./utils');
 
 const sessionStore = {};
+const defaultSession = {
+  uuid: null,
+  expiresAt: Date.now(),
+};
 function create(username, hash, ip, cb) {
   utils.getUUID(username, (UUIDerr, uuid) => {
     utils.getData({
@@ -38,9 +42,8 @@ function create(username, hash, ip, cb) {
 
 function verify(username, token, cb) {
   utils.getUUID(username, (UUIDerr, uuid) => {
-    const session = sessionStore[uuid];
+    const session = sessionStore[uuid] || defaultSession;
     if (session.token === token) {
-      console.log(`ExpiresAt: ${session.expiresAt} : Now: ${Date.now()}`);
       if (session.expiresAt > Date.now()) {
         cb(null);
       } else {
@@ -59,7 +62,7 @@ function verify(username, token, cb) {
 (function cleaner() {
   setInterval(() => {
     Object.keys(sessionStore).forEach((session) => {
-      if (sessionStore[session].expiresAt > Date.now()) {
+      if (sessionStore[session].expiresAt < Date.now()) {
         delete sessionStore[session];
       }
     });
