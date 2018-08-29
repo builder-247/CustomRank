@@ -10,6 +10,7 @@ if (fs.existsSync('.env')) {
 
 const defaults = {
   PORT: '3000', // server's port
+  SUPPORTER_LIST_URL: 'http://167.99.3.229/tracker/special.json', // JSON containing list of supporters
   API_THROTTLE: '5000', // allowed time in milliseconds between requests
   ENABLE_CUSTOM_RANKS: 'false',
 };

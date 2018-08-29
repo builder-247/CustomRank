@@ -1,3 +1,4 @@
 /.idea/
 /server/node_modules/
 /server/.env
+/server/store/supporters.json

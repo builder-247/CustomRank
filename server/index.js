@@ -1,6 +1,7 @@
 const express = require('express');
 const logger = require('morgan');
 const config = require('./config');
+const utils = require('./lib/utils');
 const session = require('./lib/session');
 const sanitize = require('./lib/sanitize');
 
@@ -153,6 +154,21 @@ app.use((err, req, res) => res.status(500).json({
 const server = app.listen(port, () => {
   console.log(`Started server on port ${port}`);
 });
+
+(function updateSupporters() {
+  console.log('Updating supporter list...');
+  utils.getData({
+    url: config.SUPPORTER_LIST_URL,
+    method: 'GET',
+    json: true,
+  }, (err, body) => {
+    if (err) {
+      console.log('Failed to get list of supporters');
+    }
+    utils.writeFile('./store/supporters.json', body, () => {});
+  });
+}());
+
 /**
  * Wait for connections to end, then shut down
  * */
