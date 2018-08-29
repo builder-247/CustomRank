@@ -10,7 +10,7 @@ if (fs.existsSync('.env')) {
 
 const defaults = {
   PORT: '3000', // server's port
-  API_THROTTLE: '30000', // allowed time in milliseconds between requests
+  API_THROTTLE: '5000', // allowed time in milliseconds between requests
   ENABLE_CUSTOM_RANKS: 'false',
 };
 // ensure that process.env has all values in defaults, but prefer the process.env value

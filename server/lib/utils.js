@@ -30,6 +30,26 @@ function getData(req, cb) {
   });
 }
 
+function getUUID(username, cb) {
+  getData({
+    url: 'https://api.mojang.com/profiles/minecraft',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    json: true,
+    body: [
+      username,
+    ],
+
+  }, (err, body) => {
+    if (err) {
+      throw err;
+    }
+    cb(null, body[0].id);
+  });
+}
+
 function readFile(file, cb) {
   jsonfile.readFile(file, (err, obj) => {
     if (err) {
@@ -51,6 +71,7 @@ module.exports = {
   stripFormatting,
   isAlphaNumeric,
   getData,
+  getUUID,
   readFile,
   writeFile,
 };

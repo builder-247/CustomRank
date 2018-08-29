@@ -1,7 +1,7 @@
 const express = require('express');
 const logger = require('morgan');
 const config = require('./config');
-const validate = require('./lib/validate');
+const session = require('./lib/session');
 const sanitize = require('./lib/sanitize');
 
 const allowedRanks = require('./custom_ranks.json');
@@ -54,12 +54,51 @@ app.get('/allowed_ranks', (req, res) => {
   });
 });
 
-const parameters = [
-  'username',
-  'token',
-  'rank',
-];
+/*
+* Used to create CustomRank session to authenticate rank changes
+ */
+app.post('/login', (req, res) => {
+  const parameters = [
+    'username',
+    'hash',
+  ];
+  const { query } = req;
+  let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '';
+  [ip] = ip.replace(/^.*:/, '').split(',');
+  let i = 0;
+  Object.keys(query).forEach((key) => {
+    if (parameters.indexOf(key) !== -1) {
+      i += 1;
+    }
+  });
+  if (i < parameters.length) {
+    res.status(400).json({
+      success: false,
+      error: 'Invalid request',
+    });
+  } else {
+    session.create(query.username, query.hash, ip, (err, user) => {
+      if (user.valid) {
+        res.json({
+          success: true,
+          token: user.token,
+        });
+      } else {
+        res.status(403).json({
+          success: false,
+          error: err,
+        });
+      }
+    });
+  }
+});
+
 app.post('/setrank', (req, res) => {
+  const parameters = [
+    'username',
+    'token',
+    'rank',
+  ];
   const { query } = req;
 
   let i = 0;
@@ -74,31 +113,27 @@ app.post('/setrank', (req, res) => {
       error: 'Invalid request',
     });
   } else {
-    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '';
-    [ip] = ip.replace(/^.*:/, '').split(',');
-    validate(query.username, query.token, ip, (err, player) => {
+    session.verify(query.username, query.token, (err) => {
       if (err) {
-        // too bad
-      }
-      if (!player.valid) {
         res.status(403).json({
           success: false,
-          error: 'Authentication failed',
+          error: err,
+        });
+      } else {
+        sanitize(query.rank, (err, rank) => {
+          if (err) {
+            res.json({
+              success: false,
+              error: err,
+            });
+          } else {
+            res.json({
+              success: true,
+              rank,
+            });
+          }
         });
       }
-      sanitize(query.rank, (err, rank) => {
-        if (err) {
-          res.json({
-            success: false,
-            error: err,
-          });
-        } else {
-          res.json({
-            success: true,
-            rank,
-          });
-        }
-      });
     });
   }
 });
