@@ -54,8 +54,9 @@ function readFile(file, cb) {
   jsonfile.readFile(file, (err, obj) => {
     if (err) {
       console.error(`[readFile] ${err}`);
+      return cb('Read error', null);
     }
-    cb(obj);
+    cb(null, obj);
   });
 }
 

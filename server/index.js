@@ -1,6 +1,7 @@
 const express = require('express');
 const logger = require('morgan');
 const config = require('./config');
+const cache = require('./lib/cache');
 const utils = require('./lib/utils');
 const session = require('./lib/session');
 const sanitize = require('./lib/sanitize');
@@ -42,9 +43,11 @@ app.use((req, res, cb) => {
 });
 
 app.get('/ranklist', (req, res) => {
-  res.json({
-    success: true,
-    list: [],
+  cache.getList((list) => {
+    res.json({
+      success: true,
+      list,
+    });
   });
 });
 
@@ -114,7 +117,7 @@ app.post('/setrank', (req, res) => {
       error: 'Invalid request',
     });
   } else {
-    session.verify(query.username, query.token, (err) => {
+    session.verify(query.username, query.token, (err, _player) => {
       if (err) {
         res.status(403).json({
           success: false,
@@ -128,6 +131,9 @@ app.post('/setrank', (req, res) => {
               error: err,
             });
           } else {
+            const player = _player;
+            player.rank = rank;
+            cache.storeList(player);
             res.json({
               success: true,
               rank,

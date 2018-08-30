@@ -45,13 +45,13 @@ function verify(username, token, cb) {
     const session = sessionStore[uuid] || defaultSession;
     if (session.token === token) {
       if (session.expiresAt > Date.now()) {
-        cb(null);
+        cb(null, { username, uuid });
       } else {
         delete sessionStore[uuid];
-        cb('Token expired');
+        cb('Token expired', null);
       }
     } else {
-      cb('Invalid token');
+      cb('Invalid token', null);
     }
   });
 }
